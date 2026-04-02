@@ -25,7 +25,7 @@ const mapOptions = {
   tilt: 0,
   heading: 0,
   zoom: 18,
-  center: { lat: 35.6594945, lng: 139.6999859 },
+  center: { lat: 35.3375, lng: 139.4870 },
   mapId: "15431d2b469f209e",
   // disable interactions due to animation loop and moveCamera
   disableDefaultUI: true,
@@ -49,36 +49,41 @@ function initMap(): void {
   directionalLight.position.set(0, 10, 50);
   scene.add(directionalLight);
 
-  // Load the model.
-  const loader = new GLTFLoader();
-  const url =
-    "https://raw.githubusercontent.com/googlemaps/js-samples/main/assets/pin.gltf";
+    const starShape = new THREE.Shape();
+  for (let i = 0; i < 5; i++) {
+    const outer = (i * Math.PI * 2) / 5 - Math.PI / 2;
+    const inner = outer + Math.PI / 5;
+    if (i === 0) starShape.moveTo(Math.cos(outer) * 30, Math.sin(outer) * 30);
+    else starShape.lineTo(Math.cos(outer) * 30, Math.sin(outer) * 30);
+    starShape.lineTo(Math.cos(inner) * 12, Math.sin(inner) * 12);
+  }
+  starShape.closePath();
+  const extrudeSettings = { depth: 8, bevelEnabled: false };
+  const geometry = new THREE.ExtrudeGeometry(starShape, extrudeSettings);
+  const material = new THREE.MeshStandardMaterial({ color: 0xff0000 });
+  const torus = new THREE.Mesh(geometry, material);
+  scene.add(torus);
 
-  loader.load(url, (gltf) => {
-    gltf.scene.scale.set(10, 10, 10);
-    gltf.scene.rotation.x = Math.PI / 2;
-    scene.add(gltf.scene);
+  let { tilt, heading, zoom } = mapOptions;
 
-    let { tilt, heading, zoom } = mapOptions;
+  const animate = () => {
+    torus.rotation.x += 0.01;
+    torus.rotation.y += 0.01;
 
-    const animate = () => {
-      if (tilt < 67.5) {
-        tilt += 0.5;
-      } else if (heading <= 360) {
-        heading += 0.2;
-        zoom -= 0.0005;
-      } else {
-        // exit animation loop
-        return;
-      }
+    if (tilt < 67.5) {
+      tilt += 0.5;
+    } else if (heading <= 360) {
+      heading += 0.2;
+      zoom -= 0.0005;
+    } else {
+      return;
+    }
 
-      map.moveCamera({ tilt, heading, zoom });
-
-      requestAnimationFrame(animate);
-    };
-
+    map.moveCamera({ tilt, heading, zoom });
     requestAnimationFrame(animate);
-  });
+  };
+
+  requestAnimationFrame(animate);
 
   new ThreeJSOverlayView({
     map,
