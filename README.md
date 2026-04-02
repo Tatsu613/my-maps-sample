@@ -1,20 +1,27 @@
-# Google Maps JavaScript Sample
+# My Maps Sample
 
-This sample is generated from @googlemaps/js-samples located at
-https://github.com/googlemaps/js-samples.This sample has the following dependencies:
+藤沢駅上空に赤い星形オブジェクトが回転する、Google Maps + Three.js のサンプルアプリです。
 
-- @googlemaps/three
-- three
+## 使い方
 
-## Setup
-
-```sh
-npm i
-npm start  # development
-npm run build  # production
+### 1. リポジトリをクローン
+```bash
+git clone https://github.com/Tatsu613/my-maps-sample.git
+cd my-maps-sample
 ```
 
-## Feedback
+### 2. Google Maps APIキーを取得
+[Google Cloud Console](https://console.cloud.google.com/) でAPIキーを取得してください。
 
-For feedback related to this sample, please open a new issue on
-[GitHub](https://github.com/googlemaps/js-samples/issues).
+### 3. .env ファイルを作成
+```
+VITE_GOOGLE_MAPS_API_KEY=あなたのAPIキー
+```
+
+### 4. インストールして起動
+```bash
+npm install
+npm run dev
+```
+
+ブラウザで `http://localhost:5173` を開くと地図が表示されます。
